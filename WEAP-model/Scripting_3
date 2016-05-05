@@ -1,0 +1,97 @@
+Dim i 'Install Year index'
+Dim j 'Scenario Site index'
+Dim s 'Demand Site index'
+Dim Temp
+Dim FN
+Dim a
+Dim b
+
+'Define Demand Site'
+Dim DemandInfo(3)
+'WEAP demand site name'
+DemandInfo(0) = "Agriculture"
+DemandInfo(1) = "Midvale"
+DemandInfo(2) = "Murray"                         
+DemandInfo(3) = "Salt Lake City"
+
+'Define the scenarios'
+Dim ScenInfo(5)
+'WEAP Scenario name in column 1 (index 0)'
+ScenInfo(0) = "Current Accounts" 'Represents first base year. Data is defined'
+ScenInfo(1) = "Reference" 'Historical conditions provided in previous class'
+ScenInfo(2) = "rcp26" 'rcp26'
+ScenInfo(3) = "rcp45" 'rcp45'
+ScenInfo(4) = "rcp60" 'rcp60'
+ScenInfo(5) = "rcp85" 'rcp85'
+
+
+Dim Rel(35,3)
+Dim Vol(35,3)
+Dim OpCo(35,3)
+Dim Header(35)
+
+FN = "C:\Users\Seungyub\Google Drive\Result\Result_" & Year(Now) & "-" & Month(Now) & "-" & Day(Now) & "_" & Hour(now) & ";" & Minute(Now) & ".csv"
+Print FN
+Call WEAP.PrintToFile(FN, Time)
+
+'Work on the installation year for reference scenario'
+FOR i=1980 to 1996
+
+    Header(i-1980)=i
+    If i=1980 then
+       a=1.84
+       b=9.1
+    Else
+        a=3.07
+        b=23.9
+    End if
+
+    FOR j =  1 to 5
+
+        Set Sc = WEAP.Scenarios("" & ScenInfo(j))
+        PRINT ""
+        PRINT SC.Name & " is now active"
+        Sc.Activate  'Activate the scenario so data inputs are for that scenario only'
+
+
+        Set CurrWts = WEAP.Branch("Supply and Resources\Groundwater\Wells")
+        CurrWts.Variables("Maximum Withdrawal").Expression = "Step(" & i & "," & a & ")"
+        CurrWts.Variables("Storage Capacity").Expression = "Step(" & i & "," & b & ")"
+        CurrWts.Variables("Natural Recharge").Expression = "Step(" & i & "," & a & ")"
+        CurrWts.Variables("Capital Costs").Expression = "Step(" & i & ",10)"
+        CurrWts.Variables("Fixed Operating Costs").Expression = "Step(" & i & ",15)"
+        PRINT ""
+        PRINT "Updated " & CurrWts.Name & " with Maximum Withdrawal " &  CurrWts.Variables("Maximum Withdrawal").Expression  & " with Capital Costs " &  CurrWts.Variables("Capital Costs").Expression & " with Fixed Operating Costs " &  CurrWts.Variables("Fixed Operating Costs").Expression
+        Header(i-1980)=Header(i-1980) & "," & ScenInfo(j)
+    Next
+
+    WEAP.Calculate
+
+    Temp=Header(i-1980)
+    Call WEAP.PrintToFile(FN,Temp,TRUE)
+
+    FOR s = 0 to 3
+        Rel(i-1980,s)=DemandInfo(s)
+        Vol(i-1980,s)="Total Usage (m3)"
+        OpCo(i-1980,s)="Operational Cost ($)"
+
+        For j =1 to 5
+            Set Sc=WEAP.Scenarios("" & ScenInfo(j))
+            Sc.Activate
+            PRINT WEAP.ResultValue("\Demand Sites\" & DemandInfo(s) & ":Reliability")
+            Rel(i-1980,s)=Rel(i-1980,s) & "," & WEAP.ResultValue("\Demand Sites\" & DemandInfo(s) & ":Reliability")
+            Vol(i-1980,s)=Vol(i-1980,s) & "," & WEAP.ResultValue("Supply and Resources\Groundwater\Wells:Total Node Outflow", WEAP.BaseYear, 1, ScenInfo(j), WEAP.EndYear, WEAP.NumTimeSteps,"Sum")
+            OpCo(i-1980,s)=OpCo(i-1980,s) & "," & WEAP.ResultValue("Supply and Resources\Groundwater\Wells:Total Node Outflow", WEAP.BaseYear, 1, ScenInfo(j), WEAP.EndYear, WEAP.NumTimeSteps,"Sum")*0.0000001
+        Next
+
+        Temp=Rel(i-1980,s) & "," & Vol (i-1980,s) & "," & OpCo(i-1980,s)
+        Call WEAP.PrintToFile(FN,Temp, TRUE)
+    NEXT
+
+
+
+    Call WEAP.PrintToFile(FN,"", TRUE)
+
+Next
+
+
