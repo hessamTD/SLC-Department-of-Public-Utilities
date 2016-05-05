@@ -1,0 +1,98 @@
+'Part 1
+'Connecting to the database'
+'--------------------------'
+
+Const adOpenStatic = 3
+Const adLockOptimistic = 3
+Set objConnection = CreateObject("ADODB.Connection")
+Set objRecordSet = CreateObject("ADODB.Recordset")
+
+objConnection.Open "DSN=Lee;UID=root;PWD=***;Database=Ass"
+
+Set WshShell = CreateObject("WScript.Shell")
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+'Part 2
+'Make a query and create CSV file from it RCP26 for Airport and Parleys'
+'----------------------------------------------------------------------'
+
+SQL_Command_String1 = " Select DATE_FORMAT(f_airport_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp26 from f_airport_wrp WHERE" & _
+" '2015-01-01' <=f_airport_wrp.`Date` and f_airport_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/airport_wrp_rcp26.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs1 = objConnection.Execute(SQL_Command_String1)
+
+SQL_Command_String2 = " Select DATE_FORMAT(f_parleys_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp26 from f_parleys_wrp WHERE" & _
+" '2015-01-01' <=f_parleys_wrp.`Date` and f_parleys_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/parleys_wrp_rcp26.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs2 = objConnection.Execute(SQL_Command_String2)
+
+
+'Make a query and create CSV file from it RCP45 for Airport and Parleys'
+'----------------------------------------------------------------------'
+
+SQL_Command_String3 =" Select DATE_FORMAT(f_airport_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp45 from f_airport_wrp WHERE" & _
+" '2015-01-01' <=f_airport_wrp.`Date` and f_airport_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/airport_wrp_rcp45.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs3 = objConnection.Execute(SQL_Command_String3)
+
+SQL_Command_String4 =" Select DATE_FORMAT(f_parleys_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp45 from f_parleys_wrp WHERE" & _
+" '2015-01-01' <=f_parleys_wrp.`Date` and f_parleys_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/parleys_wrp_rcp45.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs4 = objConnection.Execute(SQL_Command_String4)
+
+'Make a query and create CSV file from it RCP60 for Airport and Parleys'
+'----------------------------------------------------------------------'
+
+SQL_Command_String5 =" Select DATE_FORMAT(f_airport_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp60 from f_airport_wrp WHERE" & _
+" '2015-01-01' <=f_airport_wrp.`Date` and f_airport_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/airport_wrp_rcp60.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs5 = objConnection.Execute(SQL_Command_String5)
+
+SQL_Command_String6 =" Select DATE_FORMAT(f_parleys_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp60 from f_parleys_wrp WHERE" & _
+" '2015-01-01' <=f_parleys_wrp.`Date` and f_parleys_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/parleys_wrp_rcp60.csv'" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs6 = objConnection.Execute(SQL_Command_String6)
+
+'Make a query and create CSV file from it RCP85 for Airport and Parleys'
+'----------------------------------------------------------------------'
+
+SQL_Command_String7 =" Select DATE_FORMAT(f_airport_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp85 from f_airport_wrp WHERE" & _
+" '2015-01-01' <=f_airport_wrp.`Date` and f_airport_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/airport_wrp_rcp85.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs7 = objConnection.Execute(SQL_Command_String7)
+
+SQL_Command_String8 =" Select DATE_FORMAT(f_parleys_wrp.`Date`,'%d/%m/%Y') AS 'Date', rcp85 from f_parleys_wrp WHERE" & _
+" '2015-01-01' <=f_parleys_wrp.`Date` and f_parleys_wrp.`Date`<='2049-31-12' INTO OUTFILE" &_
+" 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/parleys_wrp_rcp85.csv'" & _
+"FIELDS TERMINATED BY ','" & _
+"ENCLOSED BY ' '" & _
+"LINES TERMINATED BY '\n';"
+
+Set Rs8 = objConnection.Execute(SQL_Command_String8)
